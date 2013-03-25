@@ -7,6 +7,7 @@ use Lucy::Analysis::PolyAnalyzer;
 use Lucy::Index::Indexer;
 use File::ShareDir::ProjectDistDir;
 use File::Spec;
+use Try::Tiny;
 
 sub create {
   my ( $self, $index_name, $fields, $language) = @_;
@@ -19,12 +20,16 @@ sub create {
 
   $schema->spec_field ( name => $_->{name}, type => $type ) for @$fields;
 
-  return Lucy::Index::Indexer->new(
-    index    => File::Spec->catfile($index_dir, $index_name ),
-    schema   => $schema,
-    create   => 1,
-  );
-
-  
+  $schema->resultset('Index')->find_or_create( { name => $index_name } );
+  try {
+    Lucy::Index::Indexer->new(
+      index    => File::Spec->catfile($index_dir, $index_name ),
+      schema   => $schema,
+      create   => 1,
+    );
+    return;
+  } catch {
+    return "Unable to create index: $_";
+  };
 }
 __PACKAGE__->meta->make_immutable;

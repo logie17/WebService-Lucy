@@ -1,7 +1,9 @@
 package WebService::Lucy::Service;
 use WebService::Lucy::Model::Index;
 use WebService::Lucy::Service::Response;
+use Plack::Request;
 use Web::Simple;
+use Data::Dumper;
 
 has response => ( 
   is => 'rw', 
@@ -16,6 +18,8 @@ has index => (
 sub dispatch_request {
   my $self = shift;
   sub (POST + /index/* + %*)  {
+    my $env = $_[PSGI_ENV];
+    my $req = Plack::Request->new($env);
     my $index_name = $_[1];
     my $body = $_[2];
     if ( my $body = $_[0] ) {

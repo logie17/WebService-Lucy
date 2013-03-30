@@ -2,10 +2,10 @@ package WebService::Lucy;
 use Moose;
 use WebService::Lucy::Service;
 
-with 'MooseX::Getopt';
+#ABSTRACT: Search for stuff
 
-has port       => ( is => 'rw', isa => 'Int', required => 1, default => 3000 );
-has index_path => ( is => 'rw', isa => 'Str', required => 1, default => './index');
+has index_path => ( is => 'rw', isa => 'Str', required => 1);
+has port => ( is => 'rw', isa => 'Int', required => 1);
 
 sub start {
   my $self = shift;
@@ -13,3 +13,5 @@ sub start {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+

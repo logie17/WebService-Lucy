@@ -1,6 +1,15 @@
 #! /usr/bin/env perl
 
+# PODNAME: lucy-ws
 use Plack::Runner;
 use WebService::Lucy;
-Plack::Runner->new->run( WebService::Lucy->new_with_options->start->to_psgi_app );
+use WebService::Lucy::Config;
+
+my $config = WebService::Lucy::Config->new;
+
+Plack::Runner->new->run( WebService::Lucy->new(
+  port => $config->get('port'),
+  index_path => $config->get('index_path'),
+)->start->to_psgi_app );
+
 
